@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite tests="1" failures="0" name="Surefire test" time="0.025" errors="0">
-  <properties/>
-  <testcase classname="artifactory.test.AppTest" name="testApp" time="0.01"/>
-</testsuite>
