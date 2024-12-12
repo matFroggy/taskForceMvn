@@ -10,7 +10,7 @@ name: TF Maven
 
 on:
   push:
-    branches: [ "dev" ]
+    branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
 
@@ -44,7 +44,7 @@ jobs:
 
     - name: Build Maven With JFrog CLI
       env:
-        TOKEN: ${{ secrets.JF_MVN_ACCESS_TOKEN_DEV }}
+        TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
         JFROG_CLI_BUILD_NAME: tf-maven-clean
         JFROG_CLI_BUILD_NUMBER : ${{ github.run_number }}
       run: |
