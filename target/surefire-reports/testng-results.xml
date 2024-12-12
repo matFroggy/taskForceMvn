@@ -1,0 +1,14 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="Surefire suite">
+    <groups>
+    </groups>
+    <test name="Surefire test">
+      <class name="artifactory.test.AppTest">
+        <test-method signature="testApp()" started-at="2024-12-12T16:38:15Z" name="testApp" finished-at="2024-12-12T16:38:15Z" duration-ms="10" status="PASS">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>
