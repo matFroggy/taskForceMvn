@@ -1,0 +1,64 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: TF Maven
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  # This is required for requesting the OIDC token
+  id-token: write
+  # This is required for actions/checkout
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Setup JF Cli
+      uses: jfrog/setup-jfrog-cli@v4
+      id: conf
+      env:
+        # JFrog platform url (for example: https://acme.jfrog.io)
+        JF_URL: ${{ secrets.JF_URL }}
+      with:
+        # Name of the OIDC provider as specified on the OIDC integration page in the JFrog Platform
+        oidc-provider-name: mathieup-github
+
+    - name: Build Maven With JFrog CLI
+      env:
+        TOKEN: ${{ secrets.JF_MVN_ACCESS_TOKEN_DEV }}
+        JFROG_CLI_BUILD_NAME: tf-maven-clean
+        JFROG_CLI_BUILD_NUMBER : ${{ github.run_number }}
+      run: |
+        # Export the build name and build nuber
+        # Collect environment variables for the build
+        jf rt build-collect-env --project tf
+        # Collect VCS details from git and add them to the build
+        jf rt build-add-git --project tf
+        # Trying Max command to have deps into buildInfo
+        jf mvn-config
+        jf mvn clean install --file pom.xml --project tf
+        # Publish build info
+        jf rt build-publish --project tf
+        #sleep 10
+        #jf rt bpr $JFROG_CLI_BUILD_NAME $JFROG_CLI_BUILD_NUMBER tf-mvn-dev --include-dependencies --project tf
+        #jf audit --mvn --project tf
+        #jf scan /home/runner/.m2/repository/com/mycompany/app/my-app/1.0-SNAPSHOT/*.jar --project tf
